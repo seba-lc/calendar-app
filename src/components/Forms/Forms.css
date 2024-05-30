@@ -1,0 +1,56 @@
+.loginForm-style{
+  border-radius: 20px;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.66); 
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.66);
+  padding: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.registerForm-style{
+  border-radius: 20px;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.66); 
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.66);
+  padding: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  position: fixed;
+  bottom: 150%;
+  transform: translateY(50%);
+}
+
+.form-spinner{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  left: 0;
+  top: 0;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginForm_inactive{
+  transition: 700ms;
+  top: 200%;
+}
+
+.loginForm_active{
+  transition: 700ms;
+  top: 50%;
+}
+
+.registerForm_active{
+  transition: 700ms;
+  bottom: 50%;
+}
+
+.registerForm_inactive{
+  transition: 700ms;
+  bottom: 150%;
+}

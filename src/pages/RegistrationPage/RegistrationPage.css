@@ -1,0 +1,8 @@
+.registrationPage-style{
+  background: linear-gradient(to bottom, #ff5e88, #ff9966);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
