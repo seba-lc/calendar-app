@@ -13,8 +13,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* background: linear-gradient(to bottom, #ff5e88, #ff9966);
-  height: 100vh; */
+  background: linear-gradient(to top, #0057FF, #b8d0ff);
+  /* background-image: url(./assets/lopezcruz_logo.jpeg);
+  background-size: contain;
+  background-position: center;
+  z-index: -1; */
 }
 
 code {

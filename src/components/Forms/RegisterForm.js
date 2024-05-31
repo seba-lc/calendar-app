@@ -113,11 +113,11 @@ const RegisterForm = ({ newUser, setNewUser }) => {
           ))
         : null}
 
-      <Button variant="secondary" className="w-100 my-3" type="submit">
+      <Button variant="dark" className="w-100 my-3" type="submit">
         Registrarme
       </Button>
 
-      <div className="text-center pointer" onClick={formRequired}>Ya tengo Usuario</div>
+      <div className="text-center pointer" onClick={formRequired}><u>Ya tengo Usuario</u></div>
 
     </Form>
   );

@@ -85,11 +85,11 @@ const LoginForm = ({ newUser, setNewUser }) => {
           ))
         : null}
 
-      <Button variant="secondary" className="w-100 my-3" type="submit">
+      <Button variant="dark" className="w-100 my-3" type="submit">
         Iniciar Sesión
       </Button>
 
-      <div className="text-center pointer" onClick={formRequired}>¿No tenés Usuario? REGISTRATE</div>
+      <div className="text-center pointer" onClick={formRequired}><u>¿No tenés Usuario? REGISTRATE</u></div>
 
     </Form>
   );
