@@ -9,7 +9,7 @@ const RegistrationPage = () => {
 
   return (
     <div className='registrationPage-style border'>
-      <div className='w-100'><img src={logoImg} className='ms-4' width={300} alt="" /></div>
+      <div className='logo-style'><img src={logoImg} className='ms-4' width={300} alt="" /></div>
       <RegisterForm newUser={newUser} setNewUser={setNewUser} />
       <LoginForm newUser={newUser} setNewUser={setNewUser} />
     </div>

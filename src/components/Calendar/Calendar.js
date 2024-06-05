@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import "./Calendar.css";
+import LegendItem from "../LegendBox/LegendItem";
+import CalendarDay from "../CalendaDay/CalendarDay";
 
-const Calendar = ({handleClick}) => {
+const Calendar = ({handleClick, usersData}) => {
   const months = [
     "Enero",
     "Febrero",
@@ -107,23 +109,25 @@ const Calendar = ({handleClick}) => {
         </ul>
         <ul>
           {
-            beforeInactiveDays?.map((item, index) => <li key={index} className="pointer inactive">{item}</li>)
+            beforeInactiveDays?.map((item, index) => <li key={index} className="pointer inactive days_border">{item}</li>)
           }
           {
             activeDays?.map((item, index) => (
               <li 
               key={index} 
-              className={`pointer active_days ${item.toString() === new Date().getDate().toString() ? (
+              className={`pointer days_border ${item.toString() === new Date().getDate().toString() ? (
                 new Date().getMonth().toString() === month.toString() ? (
                   new Date().getFullYear().toString() === year.toString() ? 'today' : null
                 ) : null
               ) : null}`}
               id={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} 
-              onClick={handleClick}>{item}</li>
+              onClick={handleClick}>
+                <CalendarDay day={item} usersData={usersData} month={month} year={year} />
+              </li>
             ))
           }
           {
-            afterInactiveDays?.map((item, index) => <li key={index} className="pointer inactive">{item}</li>)
+            afterInactiveDays?.map((item, index) => <li key={index} className="pointer inactive days_border">{item}</li>)
           }
         </ul>
       </section>

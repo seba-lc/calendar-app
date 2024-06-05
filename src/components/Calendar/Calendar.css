@@ -9,7 +9,8 @@
   font-weight: 600;
 }
 .calendar {
-  width: 380px;
+  width: 600px;
+  height: 600px;
   padding: 1rem;
   background: #fff;
   border-radius: 10px;
@@ -33,10 +34,13 @@
 }
 .calendar ul li {
   width: calc(100% / 7);
-  padding-top: 12.5px;
-  padding-bottom: 12.5px;
+  /* padding-top: 12.5px;
+  padding-bottom: 12.5px; */
   position: relative;
   z-index: 2;
+}
+.calendar li {
+  height: 70px;
 }
 #prev,
 #next {
@@ -74,17 +78,20 @@
 }
 
 .today{
-  transition: 500ms;
-  background-color: #000;
-  color: #fff;
+  /* transition: 500ms; */
+  /* background-color: #000; */
+  color: var(--LC-color);
+  font-weight: 700;
+  /* color: #fff; */
 }
 
 .inactive {
   color: #ccc;
 }
 
-.active_days{
-  border-radius: 50%;
+.days_border{
+  /* border-radius: 50%; */
+  border: #e0e0e0af solid 1px;
 }
 
 .active_days:hover{

@@ -6,6 +6,18 @@
   box-sizing: border-box;
 }
 
+:root{
+  --bg-1: #AE2F3E;
+  --bg-2: #206937;
+  --bg-3: #bbb8b2;
+  --bg-4: #D05E34;
+  --bg-5: #526DB2;
+  --bg-6: #664A2D;
+  --bg-7: #F1CC2B;
+  --bg-8: #69326E;
+  --LC-color: #0057FF;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,10 +26,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(to top, #0057FF, #b8d0ff);
-  /* background-image: url(./assets/lopezcruz_logo.jpeg);
-  background-size: contain;
-  background-position: center;
-  z-index: -1; */
 }
 
 code {
@@ -27,4 +35,35 @@ code {
 
 .pointer{
   cursor: pointer;
+}
+
+.logo-style{
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.bg-1{
+  background-color: #AE2F3E;
+}
+.bg-2{
+  background-color: #206937;
+}
+.bg-3{
+  background-color: #bbb8b2;
+}
+.bg-4{
+  background-color: #D05E34;
+}
+.bg-5{
+  background-color: #526DB2;
+}
+.bg-6{
+  background-color: #664A2D;
+}
+.bg-7{
+  background-color: #F1CC2B;
+}
+.bg-8{
+  background-color: #69326E;
 }
