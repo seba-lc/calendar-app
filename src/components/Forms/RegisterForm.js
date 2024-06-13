@@ -3,8 +3,9 @@ import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
 
-const RegisterForm = ({ newUser, setNewUser }) => {
+const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   const [userLog, setUserLog] = useState({
+    businessName: "",
     userName: "",
     userEmail: "",
     userPassword: "",
@@ -21,6 +22,7 @@ const RegisterForm = ({ newUser, setNewUser }) => {
     }
     setSpinner(true);
     console.log(userLog);
+    console.log('Registro Negocio y envío email de confirmación');
 
     //EN CASO ESTE TODO BIEN
     setSuccess(true);
@@ -35,13 +37,14 @@ const RegisterForm = ({ newUser, setNewUser }) => {
 
   const formRequired = () => {
     setUserLog({
+      businessName: "",
       userName: "",
       userEmail: "",
       userPassword: "",
       userPasswordRepeated: ""
     })
     document.getElementById('register-form').reset();
-    setNewUser(false);
+    setNewUserBoolean(false);
   }
 
   useEffect(() => {
@@ -54,11 +57,22 @@ const RegisterForm = ({ newUser, setNewUser }) => {
   }, [success]);
 
   return (
-    <Form onSubmit={handleSubmit} id="register-form" className={`registerForm-style ${newUser ? 'registerForm_active' : 'registerForm_inactive'}`}>
+    <Form onSubmit={handleSubmit} id="register-form" className={`registerForm-style ${newUserBoolean ? 'registerForm_active' : 'registerForm_inactive'}`}>
 
       {
         spinner ? <div className="form-spinner"><Spinner /></div> : null
       }
+
+      <Form.Group className="my-3" controlId="formBasicBusinessName">
+        <Form.Label>Nombre del Negocio</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Ingresá el nombre de tu Negocio"
+          onKeyUp={handleKeyUp}
+          name="businessName"
+          maxLength={50}
+        />
+      </Form.Group>
 
       <Form.Group className="my-3" controlId="formBasicName">
         <Form.Label>Nombre</Form.Label>
@@ -75,7 +89,7 @@ const RegisterForm = ({ newUser, setNewUser }) => {
         <Form.Label>Email</Form.Label>
         <Form.Control
           type="email"
-          placeholder="Ingresá tu email"
+          placeholder="Ingresá un email de Contacto"
           onKeyUp={handleKeyUp}
           name="userEmail"
           maxLength={50}
@@ -117,7 +131,7 @@ const RegisterForm = ({ newUser, setNewUser }) => {
         Registrarme
       </Button>
 
-      <div className="text-center pointer" onClick={formRequired}><u>Ya tengo Usuario</u></div>
+      <div className="text-center pointer" onClick={formRequired}><u>Ya estoy Registrado</u></div>
 
     </Form>
   );

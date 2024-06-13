@@ -22,3 +22,9 @@
 .halfDay{
   border-radius: 0;
 }
+
+.item-style{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

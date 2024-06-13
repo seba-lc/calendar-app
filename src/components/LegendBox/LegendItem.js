@@ -9,7 +9,7 @@ const LegendItem = ({ bg, legend, homeOffice, halfDay, size, className }) => {
   }, [])
 
   return (
-    <div className={`d-flex align-items-center justify-content-center ${className}`}>
+    <div className={`item-style ${className}`}>
       {halfDay ? (
         <div className="d-flex flex-column round-item">
           <div className="halfDay-style_1" style={{width: size, height: sizeToNumber/2+'px', backgroundColor: "transparent", borderRadius: `${sizeToNumber/2}px ${sizeToNumber/2}px 0 0`}}></div>

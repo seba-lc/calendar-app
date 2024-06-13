@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHandPointer } from "@fortawesome/free-solid-svg-icons";
 
-const LoginForm = ({ newUser, setNewUser }) => {
+const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
   const [userLog, setUserLog] = useState({
     userEmail: "",
     userPassword: ""
@@ -11,6 +14,7 @@ const LoginForm = ({ newUser, setNewUser }) => {
   const [errors, setErrors] = useState({});
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
+  let navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,7 +41,7 @@ const LoginForm = ({ newUser, setNewUser }) => {
       userPassword: ""
     })
     document.getElementById('login-form').reset();
-    setNewUser(true)
+    setNewUserBoolean(true)
   }
 
   useEffect(() => {
@@ -45,12 +49,13 @@ const LoginForm = ({ newUser, setNewUser }) => {
       setTimeout(() => {
         setSpinner(false);
         setSuccess(false);
+        navigate('/calendar');
       }, 1500)
     }
   }, [success]);
 
   return (
-    <Form onSubmit={handleSubmit} id="login-form" className={`loginForm-style ${newUser ? 'loginForm_inactive' : 'loginForm_active'}`}>
+    <Form onSubmit={handleSubmit} id="login-form" className={`loginForm-style ${newUserBoolean ? 'loginForm_inactive' : 'loginForm_active'}`}>
       {
         spinner ? <div className="form-spinner"><Spinner /></div> : null
       }
@@ -89,7 +94,7 @@ const LoginForm = ({ newUser, setNewUser }) => {
         Iniciar Sesión
       </Button>
 
-      <div className="text-center pointer" onClick={formRequired}><u>¿No tenés Usuario? REGISTRATE</u></div>
+      <div className="text-center pointer" onClick={formRequired}><u>¿Querés registrar tu Negocio? <FontAwesomeIcon icon={faHandPointer} /></u></div>
 
     </Form>
   );

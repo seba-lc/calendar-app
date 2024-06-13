@@ -1,0 +1,23 @@
+.areaTable-style th, td{
+  background-color: transparent !important;
+  border-bottom: none;
+}
+
+.areaTable-style{
+  width: 390px;
+}
+
+.w-90{
+  width: 90px;
+}
+
+.trash-btn:hover{
+  transition: 300ms;
+  background-color: rgba(175, 1, 1, 0.37) !important;
+}
+
+.submit-style{
+  width: 390px;
+  border-radius: 0 !important;
+  border-top: none;
+}
