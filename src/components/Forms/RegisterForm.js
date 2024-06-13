@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
+import axiosClient from "../../settings/axiosClient";
+import { businessRegisterValidations } from "../../helpers/Validations";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   const [userLog, setUserLog] = useState({
@@ -14,18 +18,27 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   const [errors, setErrors] = useState({});
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
+  let navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if(spinner){
       return
     }
     setSpinner(true);
-    console.log(userLog);
-    console.log('Registro Negocio y envío email de confirmación');
-
-    //EN CASO ESTE TODO BIEN
-    setSuccess(true);
+    const registerDataErrors = businessRegisterValidations(userLog);
+    setErrors(registerDataErrors);
+    if(Object.keys(registerDataErrors).length === 0){
+      try {
+        const response = await axiosClient.post('/business', userLog);
+        if(response.status === 200){
+          setSuccess(true);
+          console.log(response.data.emailToken);
+        }
+      } catch (error) {
+        setErrors({server: 'Error en el Servidor, inténtelo nuevamente.'})
+      }
+    }
   };
 
   const handleKeyUp = (e) => {
@@ -48,13 +61,30 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   }
 
   useEffect(() => {
-    if (success) {
+    if(success) {
       setTimeout(() => {
         setSpinner(false);
         setSuccess(false);
+        Swal.fire(
+          "Usuario Registrado",
+          "Por favor, revisar email para confirmar el usuario.",
+          "success"
+        ).then((result) => {
+          if(result.isConfirmed){
+            navigate('/setareas');
+          }
+        })
       }, 1500)
     }
   }, [success]);
+
+  useEffect(() => {
+    if(Object.keys(errors).length !== 0){
+      setTimeout(() => {
+        setSpinner(false);
+      }, 300)
+    }
+  }, [errors])
 
   return (
     <Form onSubmit={handleSubmit} id="register-form" className={`registerForm-style ${newUserBoolean ? 'registerForm_active' : 'registerForm_inactive'}`}>
@@ -123,7 +153,7 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
 
       {Object.keys(errors).length !== 0
         ? Object.values(errors).map((error, index) => (
-            <div key={index}>{error}</div>
+            <div className="border border-danger w-100 text-danger text-center mb-2" key={index}>{error}</div>
           ))
         : null}
 

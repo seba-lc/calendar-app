@@ -11,6 +11,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<RegistrationPage />} />
+        <Route path="/emailconfirmation/:user" element={<RegistrationPage />} />
         <Route path="/setareas" element={<SetAreasPage />} />
         <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/setcalendar" element={<SetCalendarPage />} />

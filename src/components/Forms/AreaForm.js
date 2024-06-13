@@ -6,6 +6,8 @@ import Spinner from "../Spinner/Spinner";
 const AreaForm = ({ areas, setAreas }) => {
   const [areaData, setAreaData] = useState({
     areaName: "",
+    managerName: "",
+    managerEmail: "",
     homeOfDays: "",
     halfDays: ""
   });
@@ -45,6 +47,8 @@ const AreaForm = ({ areas, setAreas }) => {
         setSpinner(false);
         setSuccess(false);
         document.getElementById('formBasicAreaName').value = "";
+        document.getElementById('formBasicManagerName').value = "";
+        document.getElementById('formBasicManagerEmail').value = "";
         document.getElementById('formBasicAreaName').select();
         setAreaData({
           ...areaData,
@@ -67,7 +71,7 @@ const AreaForm = ({ areas, setAreas }) => {
       {
         spinner ? <div className="form-spinner"><Spinner /></div> : null
       }
-      <Form.Group className="my-3 d-flex align-items-center justify-content-between" controlId="formBasicAreaName">
+      <Form.Group className="mt-3 d-flex align-items-center justify-content-between" controlId="formBasicAreaName">
         <Form.Label>Área</Form.Label>
         <Form.Control
           type="text"
@@ -80,7 +84,33 @@ const AreaForm = ({ areas, setAreas }) => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3 d-flex align-items-center justify-content-between" controlId="formBasicHODays">
+      <Form.Group className="my-2 d-flex align-items-center justify-content-between" controlId="formBasicManagerName">
+        <Form.Label>Jefe del Área</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Nombre"
+          onKeyUp={handleKeyUp}
+          name="managerName"
+          maxLength={50}
+          className="w-220"
+          required={true}
+        />
+      </Form.Group>
+
+      <Form.Group className="my-2 d-flex align-items-center justify-content-between" controlId="formBasicManagerEmail">
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="Email"
+          onKeyUp={handleKeyUp}
+          name="managerEmail"
+          maxLength={50}
+          className="w-220"
+          required={true}
+        />
+      </Form.Group>
+
+      <Form.Group className="my-2 d-flex align-items-center justify-content-between" controlId="formBasicHODays">
         <Form.Label className="text-center">Home Offices por Mes</Form.Label>
         <Form.Control
           type="number"
@@ -92,7 +122,7 @@ const AreaForm = ({ areas, setAreas }) => {
         />
       </Form.Group>
 
-      <Form.Group className="mb-3 d-flex align-items-center justify-content-between" controlId="formBasicHalfDays">
+      <Form.Group className="my-2 d-flex align-items-center justify-content-between" controlId="formBasicHalfDays">
         <Form.Label className="text-center">Medios Días por Mes</Form.Label>
         <Form.Control
           type="number"
