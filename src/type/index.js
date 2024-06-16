@@ -1,0 +1,5 @@
+export const POST_USER = 'POST_USER';
+export const REMOVE_USER = 'REMOVE_USER';
+
+export const POST_BUSINESS_AREA = 'POST_BUSINESS_AREA';
+export const GET_BUSINESSES_AREAS = 'GET_BUSINESSES_AREAS';

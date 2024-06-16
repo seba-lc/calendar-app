@@ -67,3 +67,16 @@ code {
 .bg-8{
   background-color: #69326E;
 }
+
+.form-spinner{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}

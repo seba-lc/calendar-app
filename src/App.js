@@ -5,18 +5,26 @@ import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 import SetCalendarPage from "./pages/SetCalendarPage/SetCalendarPage";
 import SetUsersPage from "./pages/SetUsersPage/SetUsersPage";
 import SetAreasPage from "./pages/SetAreasPage/SetAreasPage";
+import ConfirmationEmailPage from "./pages/ConfirmationEmailPage/ConfirmationEmailPage";
+import UserState from "./context/Users/UserState";
+import PrivateRoute from "./routes/PrivateRoute";
+import BusinessState from "./context/Businesses/BusinessState";
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<RegistrationPage />} />
-        <Route path="/emailconfirmation/:user" element={<RegistrationPage />} />
-        <Route path="/setareas" element={<SetAreasPage />} />
-        <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/setcalendar" element={<SetCalendarPage />} />
-        <Route path="/setusers" element={<SetUsersPage />} />
-      </Routes>
+      <UserState>
+        <BusinessState>
+          <Routes>
+            <Route path="/" element={<RegistrationPage />} />
+            <Route path="/emailconfirmation/:user" element={<ConfirmationEmailPage />} />
+            <Route path="/setareas" element={<PrivateRoute><SetAreasPage /></PrivateRoute>} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/setcalendar" element={<SetCalendarPage />} />
+            <Route path="/setusers" element={<SetUsersPage />} />
+          </Routes>
+        </BusinessState>
+      </UserState>
     </>
   );
 }

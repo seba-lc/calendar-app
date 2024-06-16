@@ -1,15 +1,24 @@
 import { Button, Table } from 'react-bootstrap';
 import './AreasTable.css';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Spinner from '../Spinner/Spinner';
+import UserContext from '../../context/Users/UserContext';
+import axiosClient from '../../settings/axiosClient';
+import postNewArea from '../../helpers/postNewArea';
+import PopUp from '../PopUp/PopUp';
+import BusinessContext from '../../context/Businesses/BusinessContext';
 
 const AreasTable = ({ areas, setAreas }) => {
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { userBusiness } = useContext(UserContext);
+  const { postBusinessNewArea, businessAreas } = useContext(BusinessContext);
+  const [errors, setErrors] = useState({});
+  const [popUp, setPopUp] = useState(false);
 
-  const handleClick = (itemSelected) => {
+  const deleteItem = (itemSelected) => {
     if(spinner){
       return;
     }
@@ -21,8 +30,22 @@ const AreasTable = ({ areas, setAreas }) => {
     setSuccess(true);
   }
 
-  const submitData = () => {
-    console.log(areas);
+  const submitData = async () => {
+    if(spinner){
+      return
+    }
+    if(businessAreas.length !== areas.length){
+      setSpinner(true);
+      const postingAreaErrors = await postBusinessNewArea(areas, userBusiness);
+      if(Object.keys(postingAreaErrors).length !== 0){
+        setErrors(postingAreaErrors);
+        return;
+      }
+      setSuccess(true);
+    }else{
+      console.log('NO ESTOY MODIFICANDO EL ARRAY QUE YA VIENE');
+      console.log('NO LO MANDO AL BACKEND');
+    }
   }
 
   useEffect(() => {
@@ -34,6 +57,15 @@ const AreasTable = ({ areas, setAreas }) => {
     }
   }, [success])
 
+  useEffect(() => {
+    if(Object.keys(errors).length !== 0){
+      setTimeout(() => {
+        setSpinner(false);
+        setPopUp(true);
+      }, 3000)
+    }
+  }, [errors])
+
   return (
     <>
       {
@@ -42,6 +74,7 @@ const AreasTable = ({ areas, setAreas }) => {
             {
               spinner ? <div className="form-spinner"><Spinner /></div> : null
             }
+            <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Error"} popUpText={Object.values(errors).join(', ')} closeBtn={true} />
             <Table bordered className='areaTable-style mt-3 mb-0'>
               <thead>
                 <tr>
@@ -57,7 +90,7 @@ const AreasTable = ({ areas, setAreas }) => {
                     <td>{item.areaName.toUpperCase()}</td>
                     <td className='text-center'>{item.homeOfDays}</td>
                     <td className='text-center'>{item.halfDays}</td>
-                    <td className='text-center pointer trash-btn' onClick={() => handleClick(item)}><FontAwesomeIcon size='sm' icon={faTrash} /></td>
+                    <td className='text-center pointer trash-btn' onClick={() => deleteItem(item)}><FontAwesomeIcon size='sm' icon={faTrash} /></td>
                   </tr>
                 ))}
               </tbody>

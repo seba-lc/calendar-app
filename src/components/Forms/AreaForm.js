@@ -37,7 +37,7 @@ const AreaForm = ({ areas, setAreas }) => {
   const handleKeyUp = (e) => {
     setAreaData({
       ...areaData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.trim(),
     });
   };
 

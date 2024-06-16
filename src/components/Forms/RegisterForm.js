@@ -4,8 +4,7 @@ import './Forms.css';
 import Spinner from "../Spinner/Spinner";
 import axiosClient from "../../settings/axiosClient";
 import { businessRegisterValidations } from "../../helpers/Validations";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
+import PopUp from "../PopUp/PopUp";
 
 const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   const [userLog, setUserLog] = useState({
@@ -18,7 +17,8 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   const [errors, setErrors] = useState({});
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
-  let navigate = useNavigate();
+  const [popUp, setPopUp] = useState(false);
+  const popUpText = "Para poder continuar con el proceso, por favor revisa tu casilla de Email."
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
         const response = await axiosClient.post('/business', userLog);
         if(response.status === 200){
           setSuccess(true);
-          console.log(response.data.emailToken);
+          console.log(response.data);
         }
       } catch (error) {
         setErrors({server: 'Error en el Servidor, inténtelo nuevamente.'})
@@ -47,6 +47,11 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const popUpFunction = () => {
+    formRequired();
+    setPopUp(false);
+  }
 
   const formRequired = () => {
     setUserLog({
@@ -63,18 +68,10 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   useEffect(() => {
     if(success) {
       setTimeout(() => {
-        setSpinner(false);
         setSuccess(false);
-        Swal.fire(
-          "Usuario Registrado",
-          "Por favor, revisar email para confirmar el usuario.",
-          "success"
-        ).then((result) => {
-          if(result.isConfirmed){
-            navigate('/setareas');
-          }
-        })
-      }, 1500)
+        setSpinner(false);
+        setPopUp(true);
+      }, 2000)
     }
   }, [success]);
 
@@ -87,83 +84,85 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   }, [errors])
 
   return (
-    <Form onSubmit={handleSubmit} id="register-form" className={`registerForm-style ${newUserBoolean ? 'registerForm_active' : 'registerForm_inactive'}`}>
-
+    <>
       {
         spinner ? <div className="form-spinner"><Spinner /></div> : null
       }
-
-      <Form.Group className="my-3" controlId="formBasicBusinessName">
-        <Form.Label>Nombre del Negocio</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Ingresá el nombre de tu Negocio"
-          onKeyUp={handleKeyUp}
-          name="businessName"
-          maxLength={50}
-        />
-      </Form.Group>
-
-      <Form.Group className="my-3" controlId="formBasicName">
-        <Form.Label>Nombre</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Ingresá tu nombre"
-          onKeyUp={handleKeyUp}
-          name="userName"
-          maxLength={50}
-        />
-      </Form.Group>
-
-      <Form.Group className="my-3" controlId="formBasicEmail">
-        <Form.Label>Email</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder="Ingresá un email de Contacto"
-          onKeyUp={handleKeyUp}
-          name="userEmail"
-          maxLength={50}
-        />
-        <Form.Text className="text-muted">
-          No compartiremos tu dirección de email con nadie.
-        </Form.Text>
-      </Form.Group>
-
-      <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Contraseña</Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="Ingresá tu contraseña"
-          onKeyUp={handleKeyUp}
-          name="userPassword"
-          maxLength={40}
-        />
-      </Form.Group>
+      <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Bienvenido"} popUpText={popUpText} popUpBtnFunction={popUpFunction} popUpBtnText={"Continuar"} />
+      <Form onSubmit={handleSubmit} id="register-form" className={`registerForm-style ${newUserBoolean ? 'registerForm_active' : 'registerForm_inactive'} ${popUp ? 'd-none' : null}`}>
       
-      <Form.Group className="mb-3" controlId="formBasicPasswordRepeated">
-        <Form.Label>Contraseña</Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="Repetí la contraseña"
-          onKeyUp={handleKeyUp}
-          name="userPasswordRepeated"
-          maxLength={40}
-        />
-      </Form.Group>
-
-      {Object.keys(errors).length !== 0
-        ? Object.values(errors).map((error, index) => (
-            <div className="border border-danger w-100 text-danger text-center mb-2" key={index}>{error}</div>
-          ))
-        : null}
-
-      <Button variant="dark" className="w-100 my-3" type="submit">
-        Registrarme
-      </Button>
-
-      <div className="text-center pointer" onClick={formRequired}><u>Ya estoy Registrado</u></div>
-
-    </Form>
+        <Form.Group className="my-3" controlId="formBasicBusinessName">
+          <Form.Label>Nombre del Negocio</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Ingresá el nombre de tu Negocio"
+            onKeyUp={handleKeyUp}
+            name="businessName"
+            maxLength={50}
+          />
+        </Form.Group>
+      
+        <Form.Group className="my-3" controlId="formBasicName">
+          <Form.Label>Nombre</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Ingresá tu nombre"
+            onKeyUp={handleKeyUp}
+            name="userName"
+            maxLength={50}
+          />
+        </Form.Group>
+      
+        <Form.Group className="my-3" controlId="formBasicEmail">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Ingresá un email de Contacto"
+            onKeyUp={handleKeyUp}
+            name="userEmail"
+            maxLength={50}
+          />
+          <Form.Text className="text-muted">
+            No compartiremos tu dirección de email con nadie.
+          </Form.Text>
+        </Form.Group>
+      
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Contraseña</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Ingresá tu contraseña"
+            onKeyUp={handleKeyUp}
+            name="userPassword"
+            maxLength={40}
+          />
+        </Form.Group>
+        
+        <Form.Group className="mb-3" controlId="formBasicPasswordRepeated">
+          <Form.Label>Contraseña</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Repetí la contraseña"
+            onKeyUp={handleKeyUp}
+            name="userPasswordRepeated"
+            maxLength={40}
+          />
+        </Form.Group>
+      
+        {Object.keys(errors).length !== 0
+          ? Object.values(errors).map((error, index) => (
+              <div className="border border-danger w-100 text-danger text-center mb-2" key={index}>{error}</div>
+            ))
+          : null}
+      
+        <Button variant="dark" className="w-100 my-3" type="submit">
+          Registrarme
+        </Button>
+      
+        <div className="text-center pointer" onClick={formRequired}><u>Ya estoy Registrado</u></div>
+      
+      </Form>
+    </>
   );
 };
 
