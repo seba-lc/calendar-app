@@ -9,6 +9,7 @@
   top: 50%;
   transform: translateY(-50%);
   background-color: #F8F9FA;
+  min-width: 350px;
 }
 
 .registerForm-style{

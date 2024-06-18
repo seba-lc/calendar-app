@@ -41,6 +41,46 @@ const UserState = ({ children }) => {
     }
   }
 
+  const getUserByEmail = async (userLog) => {
+    let errors = {};
+    try {
+      const response = await axiosClient.post('/user', userLog);
+      if(response.status === 200){
+        localStorage.setItem('ID', response.data.id);
+        getAuth();
+      }else if(response.status === 201){
+        errors.data = 'Datos Incorrectos';
+        dispatch({
+          type: REMOVE_USER
+        });
+      }
+      return errors;
+    } catch (error) {
+      errors.server = 'Error en el servidor, inténtelo nuevamente';
+      dispatch({
+        type: REMOVE_USER
+      });
+      return errors
+    }
+  }
+
+  const postUserNewPassword = async (passwordData, token) => {
+    let errors = {};
+    try {
+      const response = await axiosClient.post('/user/password', {user: token, userNewPassword: passwordData});
+      if(response.status === 200){
+        localStorage.setItem('ID', response.data.id);
+        getAuth();
+      }
+    } catch (error) {
+      errors.server = 'Error en el servidor, inténtelo nuevamente';
+      dispatch({
+        type: REMOVE_USER
+      });
+    }
+    return errors;
+  }
+
   return (
     <UserContext.Provider value={{
       userData: state.userData,
@@ -48,7 +88,9 @@ const UserState = ({ children }) => {
       adminKey: state.adminKey,
       checkedUser: state.checkedUser,
       auth: state.auth,
-      getAuth
+      getAuth,
+      getUserByEmail,
+      postUserNewPassword
     }}>
       { children }
     </UserContext.Provider>

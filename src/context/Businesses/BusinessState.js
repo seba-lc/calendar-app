@@ -1,6 +1,6 @@
 import { useReducer } from "react"
 import axiosClient from "../../settings/axiosClient";
-import { GET_BUSINESSES_AREAS, POST_BUSINESS_AREA } from "../../type";
+import { DELETE_BUSINESS_AREA, GET_BUSINESSES_AREAS, POST_BUSINESS_AREA } from "../../type";
 import BusinessContext from "./BusinessContext";
 import BusinessReducer from "./BusinessReducer";
 
@@ -13,10 +13,10 @@ const BusinessState = ({ children }) => {
 
   const [state, dispatch] = useReducer(BusinessReducer, initialState);
 
-  const getBusinessAreas = async (businessId) => {
+  const getUserBusinessAreas = async (businessId, userLogged) => {
     let errors = {};
     try {
-      const response = await axiosClient.post('/businessarea', {business: businessId});
+      const response = await axiosClient.post('/businessarea', {business: businessId, userLogged: userLogged});
       if(response.status === 200){
         dispatch({
           type: GET_BUSINESSES_AREAS,
@@ -32,15 +32,17 @@ const BusinessState = ({ children }) => {
 
   const postBusinessNewArea = async (areas, userBusiness) => {
     let errors = {};
-    if(areas.length !== 0){
-      for(let i=0; i<areas.length; i++){
+    const areasFiltered = areas.filter(area => area._id === undefined);
+    if(areasFiltered.length !== 0){
+      for(let i=0; i<areasFiltered.length; i++){
         const areaDB = {
-          ...areas[i],
+          ...areasFiltered[i],
           business: userBusiness._id,
-          accessGrantedEmails: [userBusiness.managerEmail, areas[i].managerEmail]
+          accessGrantedEmails: [userBusiness.managerEmail, areasFiltered[i].managerEmail]
         }
         try {
           const response = await axiosClient.post('/businessarea/area', areaDB);
+          console.log(response.data);
           if(response.status === 200){
             dispatch({
               type: POST_BUSINESS_AREA,
@@ -55,8 +57,27 @@ const BusinessState = ({ children }) => {
     return errors;
   }
 
-  const deleteBusinessArea = async (businessAreaId) => {
-
+  const deleteBusinessArea = async (businessArea) => {
+    let errors = {};
+    if(businessArea._id){
+      try {
+        const response = await axiosClient.post('/businessarea/delete', {id: businessArea._id});
+        if(response.status === 200){
+          dispatch({
+            type: DELETE_BUSINESS_AREA,
+            payload: businessArea
+          })
+        }
+      } catch (error) {
+        errors.server = "Error en el Servidor. Intentelo nuevamente."
+      }
+    }else{
+      dispatch({
+        type: DELETE_BUSINESS_AREA,
+        payload: businessArea
+      })
+    }
+    return errors;
   }
 
   return (
@@ -64,7 +85,8 @@ const BusinessState = ({ children }) => {
       businessData: state.businessData,
       businessAreas: state.businessAreas,
       postBusinessNewArea,
-      getBusinessAreas
+      getUserBusinessAreas,
+      deleteBusinessArea
     }}>
       { children }
     </BusinessContext.Provider>

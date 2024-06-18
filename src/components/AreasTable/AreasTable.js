@@ -14,19 +14,20 @@ const AreasTable = ({ areas, setAreas }) => {
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
   const { userBusiness } = useContext(UserContext);
-  const { postBusinessNewArea, businessAreas } = useContext(BusinessContext);
+  const { postBusinessNewArea, businessAreas, deleteBusinessArea } = useContext(BusinessContext);
   const [errors, setErrors] = useState({});
   const [popUp, setPopUp] = useState(false);
 
-  const deleteItem = (itemSelected) => {
+  const deleteItem = async (itemSelected) => {
     if(spinner){
       return;
     }
+    console.log(itemSelected);
     setSpinner(true);
-    const index = areas.indexOf(itemSelected);
-    const arraySup = areas.concat([]);
-    arraySup.splice(index, 1);
-    setAreas(arraySup);
+    const deleteError = await deleteBusinessArea(itemSelected);
+    if(Object.keys(deleteError).length !== 0){
+      setErrors(deleteError)
+    }
     setSuccess(true);
   }
 

@@ -9,6 +9,7 @@ import ConfirmationEmailPage from "./pages/ConfirmationEmailPage/ConfirmationEma
 import UserState from "./context/Users/UserState";
 import PrivateRoute from "./routes/PrivateRoute";
 import BusinessState from "./context/Businesses/BusinessState";
+import ConfirmationAreaEmailPage from "./pages/ConfirmationAreaEmailPage/ConfirmationAreaEmailPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Routes>
             <Route path="/" element={<RegistrationPage />} />
             <Route path="/emailconfirmation/:user" element={<ConfirmationEmailPage />} />
+            <Route path="/emailconfirmation/area/:user" element={<ConfirmationAreaEmailPage />} />
             <Route path="/setareas" element={<PrivateRoute><SetAreasPage /></PrivateRoute>} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/setcalendar" element={<SetCalendarPage />} />

@@ -40,3 +40,18 @@ export const businessRegisterValidations = (values) => {
 
   return errors;
 };
+
+export const newPasswordValidation = (values) => {
+  let errors = {};
+  if (!values.userPassword || !values.userPasswordRepeated) {
+    errors.password = 'La contraseña es obligatoria'
+  } else if (values.userPassword !== values.userPasswordRepeated) {
+    errors.password = 'Las contraseñas no coinciden'
+  } else if (values.userPassword.length < 8){
+    errors.password = 'La contraseña debe tener como mínimo 8 caracteres'
+  } else if (values.userPassword.length > 30) {
+    errors.password = 'La contraseña no debe poseer más de 30 caracteres'
+  }
+
+  return errors;
+};

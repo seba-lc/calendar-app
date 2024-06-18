@@ -2,21 +2,25 @@ import { useContext, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHandPointer } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../../context/Users/UserContext";
+import { newPasswordValidation } from "../../helpers/Validations";
+import PopUp from "../PopUp/PopUp";
 
-const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
+const NewPasswordForm = () => {
   const [userLog, setUserLog] = useState({
-    userEmail: "",
-    userPassword: ""
+    userPassword: "",
+    userPasswordRepeated: ""
   });
   const [errors, setErrors] = useState({});
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { getUserByEmail } = useContext(UserContext);
+  const { postUserNewPassword } = useContext(UserContext);
   let navigate = useNavigate();
+  const params = useParams();
+  const [popUp, setPopUp] = useState(false);
+  const popUpTitle = "Contraseña Almacenada";
+  const popUpText = "Gracias por confirmar el Usuario. Ahora podes continuar ingresando datos de los integrantes de tu área.";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,14 +28,18 @@ const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
       return
     }
     setSpinner(true);
-    const loginError = await getUserByEmail(userLog);
-    if(Object.keys(loginError).length !== 0){
-      setErrors(loginError);
-      return;
+    const newPassError = newPasswordValidation(userLog);
+    setErrors(newPassError);
+    if(Object.keys(newPassError).length === 0){
+      const newPasswordError = await postUserNewPassword(userLog.userPassword, params.user);
+      if(Object.keys(newPasswordError).length !== 0){
+        setErrors(newPasswordError);
+        return;
+      }
+  
+      //EN CASO ESTE TODO BIEN
+      setSuccess(true);
     }
-
-    //EN CASO ESTE TODO BIEN
-    setSuccess(true);
   };
 
   const handleKeyUp = (e) => {
@@ -44,21 +52,13 @@ const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
     });
   };
 
-  const formRequired = () => {
-    setUserLog({
-      userEmail: "",
-      userPassword: ""
-    })
-    document.getElementById('login-form').reset();
-    setNewUserBoolean(true)
-  }
-
   useEffect(() => {
     if (success) {
       setTimeout(() => {
+        document.getElementById("newPassword-form").reset();
         setSpinner(false);
         setSuccess(false);
-        navigate('/calendar');
+        setPopUp(true);
       }, 1500)
     }
   }, [success]);
@@ -66,7 +66,6 @@ const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
   useEffect(() => {
     if(Object.keys(errors).length !== 0){
       setTimeout(() => {
-        console.log(errors);
         setSpinner(false);
       }, 3000)
     }
@@ -77,28 +76,26 @@ const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
       {
         spinner ? <div className="form-spinner"><Spinner /></div> : null
       }
-      <Form onSubmit={handleSubmit} id="login-form" className={`loginForm-style ${newUserBoolean ? 'loginForm_inactive' : 'loginForm_active'}`}>
-        <Form.Group className="my-3" controlId="formBasicEmailLogin">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Ingresá tu email"
-            onKeyUp={handleKeyUp}
-            name="userEmail"
-            maxLength={50}
-          />
-          <Form.Text className="text-muted">
-            No compartiremos tu dirección de email con nadie.
-          </Form.Text>
-        </Form.Group>
-      
-        <Form.Group className="mb-3" controlId="formBasicPasswordLogin">
+      <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={popUpTitle} popUpText={popUpText} popUpBtnFunction={() => navigate('/setusers')} popUpBtnText={"Continuar"} />
+      <Form onSubmit={handleSubmit} id="newPassword-form" className="loginForm-style">
+        <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Contraseña</Form.Label>
           <Form.Control
             type="password"
             placeholder="Ingresá tu contraseña"
             onKeyUp={handleKeyUp}
             name="userPassword"
+            maxLength={40}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPasswordRepeated">
+          <Form.Label>Repetir Contraseña</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Ingresá tu contraseña"
+            onKeyUp={handleKeyUp}
+            name="userPasswordRepeated"
             maxLength={40}
           />
         </Form.Group>
@@ -110,14 +107,12 @@ const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
           : null}
       
         <Button variant="dark" className="w-100 my-3" type="submit">
-          Iniciar Sesión
+          Almacenar Información
         </Button>
-      
-        <div className="text-center pointer" onClick={formRequired}><u>¿Querés registrar tu Negocio? <FontAwesomeIcon icon={faHandPointer} /></u></div>
       
       </Form>
     </>
   );
 };
 
-export default LoginForm;
+export default NewPasswordForm;

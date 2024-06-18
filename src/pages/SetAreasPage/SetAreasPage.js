@@ -10,13 +10,14 @@ import BusinessContext from '../../context/Businesses/BusinessContext';
 const SetAreasPage = () => {
   const [areas, setAreas] = useState([]);
   const { getAuth, auth, userData, userBusiness } = useContext(UserContext);
-  const { getBusinessAreas, businessAreas } = useContext(BusinessContext);
+  const { getUserBusinessAreas, businessAreas } = useContext(BusinessContext);
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const prueba = () => {
     console.log(userData);
     console.log(userBusiness);
+    // console.log(areas);
     console.log(businessAreas);
   }
 
@@ -24,7 +25,9 @@ const SetAreasPage = () => {
     if(!auth){
       getAuth();
     }else{
-      getBusinessAreas(userBusiness._id);
+      if(businessAreas.length === 0){
+        getUserBusinessAreas(userBusiness._id, userData.userEmail);
+      }
     }
   }, [auth])
 
@@ -48,7 +51,7 @@ const SetAreasPage = () => {
       <div className='setArea-style'>
         <AreaForm areas={areas} setAreas={setAreas} />
         <AreasTable areas={areas} setAreas={setAreas} />
-        <button onClick={prueba}>hola</button>
+        <button onClick={prueba}>DATA</button>
       </div>
     </Layout>
   );
