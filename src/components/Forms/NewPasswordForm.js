@@ -15,12 +15,12 @@ const NewPasswordForm = () => {
   const [errors, setErrors] = useState({});
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { postUserNewPassword } = useContext(UserContext);
+  const { postUserNewPassword, adminKey } = useContext(UserContext);
   let navigate = useNavigate();
   const params = useParams();
   const [popUp, setPopUp] = useState(false);
   const popUpTitle = "Contraseña Almacenada";
-  const popUpText = "Gracias por confirmar el Usuario. Ahora podes continuar ingresando datos de los integrantes de tu área.";
+  const popUpText = adminKey ? "Gracias por confirmar el Usuario. Ahora podes continuar ingresando datos de los integrantes de tu área." : "Gracias por Unirte a Calendar.";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +29,6 @@ const NewPasswordForm = () => {
     }
     setSpinner(true);
     const newPassError = newPasswordValidation(userLog);
-    setErrors(newPassError);
     if(Object.keys(newPassError).length === 0){
       const newPasswordError = await postUserNewPassword(userLog.userPassword, params.user);
       if(Object.keys(newPasswordError).length !== 0){
@@ -39,6 +38,8 @@ const NewPasswordForm = () => {
   
       //EN CASO ESTE TODO BIEN
       setSuccess(true);
+    }else{
+      setErrors(newPassError);
     }
   };
 
@@ -51,6 +52,14 @@ const NewPasswordForm = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const popFunction = () => {
+    if(adminKey){
+      navigate('/setusers');
+    }else{
+      navigate('/calendar')
+    }
+  }
 
   useEffect(() => {
     if (success) {
@@ -67,7 +76,7 @@ const NewPasswordForm = () => {
     if(Object.keys(errors).length !== 0){
       setTimeout(() => {
         setSpinner(false);
-      }, 3000)
+      }, 500)
     }
   }, [errors])
 
@@ -76,7 +85,7 @@ const NewPasswordForm = () => {
       {
         spinner ? <div className="form-spinner"><Spinner /></div> : null
       }
-      <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={popUpTitle} popUpText={popUpText} popUpBtnFunction={() => navigate('/setusers')} popUpBtnText={"Continuar"} />
+      <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={popUpTitle} popUpText={popUpText} popUpBtnFunction={popFunction} popUpBtnText={"Continuar"} />
       <Form onSubmit={handleSubmit} id="newPassword-form" className="loginForm-style">
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Contraseña</Form.Label>

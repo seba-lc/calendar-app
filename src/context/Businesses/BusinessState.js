@@ -80,13 +80,28 @@ const BusinessState = ({ children }) => {
     return errors;
   }
 
+  const postNewEmployeeUser = async (dataDB, businessId, userLogged) => {
+    let errors = {};
+    try {
+      const response = await axiosClient.post('/user/newuser', dataDB);
+      if(response.status === 200){
+        console.log(response.data.emailToken);
+        getUserBusinessAreas(businessId, userLogged);
+      }
+    } catch (error) {
+      errors.server = "Error en el Servidor. Intentelo nuevamente."
+    }
+    return errors;
+  }
+
   return (
     <BusinessContext.Provider value={{
-      businessData: state.businessData,
       businessAreas: state.businessAreas,
+      calendarData: state.calendarData,
       postBusinessNewArea,
       getUserBusinessAreas,
-      deleteBusinessArea
+      deleteBusinessArea,
+      postNewEmployeeUser
     }}>
       { children }
     </BusinessContext.Provider>
