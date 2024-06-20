@@ -24,3 +24,17 @@
   min-height: 60px;
 }
 
+.data-btn-style{
+  border-radius: 0 !important;
+}
+
+.updateData-calendar-form{
+  transition: opacity 300ms ease-out;
+  opacity: 0;
+}
+
+.updateData-calendar-form_active{
+  transition: opacity 300ms ease-in;
+  opacity: 1;
+}
+

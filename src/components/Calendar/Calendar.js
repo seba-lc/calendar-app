@@ -3,7 +3,7 @@ import "./Calendar.css";
 import LegendItem from "../LegendBox/LegendItem";
 import CalendarDay from "../CalendaDay/CalendarDay";
 
-const Calendar = ({handleClick, usersData}) => {
+const Calendar = ({handleClick, usersData, updateDataActive, month, setMonth, year, setYear}) => {
   const months = [
     "Enero",
     "Febrero",
@@ -18,8 +18,6 @@ const Calendar = ({handleClick, usersData}) => {
     "Noviembre",
     "Diciembre",
   ];
-  const [month, setMonth] = useState((new Date()).getMonth());
-  const [year, setYear] = useState((new Date()).getFullYear());
   const [monthCalendar, setMonthCalendar] = useState({});
   const [beforeInactiveDays, setBeforeInactiveDays] = useState([]);
   const [afterInactiveDays, setAfterInactiveDays] = useState([]);
@@ -122,7 +120,7 @@ const Calendar = ({handleClick, usersData}) => {
               ) : null}`}
               id={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} 
               onClick={handleClick}>
-                <CalendarDay day={item} usersData={usersData} month={month} year={year} parentId={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} />
+                <CalendarDay updateDataActive={updateDataActive} day={item} usersData={usersData} month={month} year={year} parentId={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} />
               </li>
             ))
           }

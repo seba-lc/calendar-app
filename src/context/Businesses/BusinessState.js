@@ -8,7 +8,8 @@ const BusinessState = ({ children }) => {
   const initialState = {
     //busines general data ya esta en el usuario
     businessAreas: [], //solo se van a traer las areas de acceso del usuario
-    calendarDataPerBusinessArea: [] //idem
+    calendarDataPerBusinessArea: [], //idem
+    calendarData: []
   }
 
   const [state, dispatch] = useReducer(BusinessReducer, initialState);
@@ -145,6 +146,7 @@ const BusinessState = ({ children }) => {
     <BusinessContext.Provider value={{
       businessAreas: state.businessAreas,
       calendarDataPerBusinessArea: state.calendarDataPerBusinessArea,
+      calendarData: state.calendarData,
       postBusinessNewArea,
       getUserBusinessAreas,
       deleteBusinessArea,

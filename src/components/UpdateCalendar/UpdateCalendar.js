@@ -4,69 +4,79 @@ import { useContext, useEffect, useState } from 'react';
 import Spinner from '../Spinner/Spinner';
 import BusinessContext from '../../context/Businesses/BusinessContext';
 import PopUp from '../PopUp/PopUp';
+import cleanPaintedDays from '../../helpers/cleanPaintedDays';
+import paintDay from '../../helpers/paintDay';
 
-const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelected}) => {
+const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelected, updateDataActive, setUpdateDataActive, month, year}) => {
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
   const [popUp, setPopUp] = useState(false);
-  const { postCalendarDataPerUserPerMonth } = useContext(BusinessContext);
+  const { postCalendarDataPerUserPerMonth, calendarDataPerBusinessArea } = useContext(BusinessContext);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(spinner){
       return;
     }
-    // setSpinner(true);
-    // const postDataErrors = await postCalendarDataPerUserPerMonth(data);
-    // if(Object.keys(postDataErrors).length !== 0){
-    //   setErrors(postDataErrors);
-    //   return;
-    // }
-    // setSuccess(true);
-
-    cleanCalendar();
-  }
-
-  const cleanCalendar = () => {
-    const itemHalfDayList = [].slice.call(document.getElementsByClassName('halfDay-selected-style'));
-    const itemHomeOfList = [].slice.call(document.getElementsByClassName('homeOf-selected-style'));
-    for(let i=0; i<itemHalfDayList.length; i++){
-      itemHalfDayList[i].classList.remove('halfDay-selected-style');
+    setSpinner(true);
+    const postDataErrors = await postCalendarDataPerUserPerMonth(data);
+    if(Object.keys(postDataErrors).length !== 0){
+      setErrors(postDataErrors);
+      return;
     }
-    for(let i=0; i<itemHomeOfList.length; i++){
-      itemHomeOfList[i].classList.remove('homeOf-selected-style')
-    }
-    setData({
-      userEmail: "",
-      situation: "",
-      halfDaydates: [],
-      homeOfdates: [],
-      month: "",
-      businessAreaId: ""
-    })
-    document.getElementById('formBasicUserCalendar').value = "";
-    document.getElementById('formBasicDaySituationCalendar').value = "";
+    setSuccess(true);
   }
-  
 
   const handleKeyUp = (e) => {
+    if(e.target.name === "userEmail"){
+      cleanPaintedDays();
+      const monthString =  month.toString().length === 1 ? '0'+(month+1) : (month+1).toString();
+      const userData = calendarDataPerBusinessArea.find(item => item.userEmail === e.target.value && item.month === `${monthString}-${year.toString()}`);
+      if(userData){
+        setData({
+          ...data,
+          userEmail: e.target.value,
+          halfDaydates: userData.halfDaydates,
+          homeOfdates: userData.homeOfdates
+        })
+        userData.halfDaydates.forEach(item => {
+          paintDay("halfDay", document.getElementById(`${item}-${monthString}-${year.toString()}`));
+        })
+        userData.homeOfdates.forEach(item => {
+          paintDay("homeOfDay", document.getElementById(`${item}-${monthString}-${year.toString()}`));
+        })
+        return;
+      }else{
+        setData({
+          ...data,
+          userEmail: e.target.value,
+          halfDaydates: [],
+          homeOfdates: []
+        })
+        return;
+      }
+    }
     setData({
       ...data,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   }
 
   useEffect(() => {
     if(dateSelected.length !== 0){
+      const element = document.getElementById(dateSelected);
       if(data.situation === 'homeOfDay'){
         if(data.homeOfdates.find(date => date === dateSelected.substring(0, 2))){
+          paintDay(data.situation, element);
           const newDates = data.homeOfdates.filter(date => date !== dateSelected.substring(0, 2));
           setData({
             ...data,
             homeOfdates: newDates
           })
-        }else{
+        }else if(!data.homeOfdates.find(date => date === dateSelected.substring(0, 2)) && data.homeOfdates.length < areaSelected.homeOfDays){
+          paintDay(data.situation, element);
           setData({
             ...data,
             homeOfdates: data.homeOfdates.concat([dateSelected.substring(0, 2)])
@@ -75,12 +85,14 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
       }
       if(data.situation === 'halfDay'){
         if(data.halfDaydates.find(date => date === dateSelected.substring(0, 2))){
+          paintDay(data.situation, element);
           const newDates = data.halfDaydates.filter(date => date !== dateSelected.substring(0, 2));
           setData({
             ...data,
             halfDaydates: newDates
           })
-        }else{
+        }else if(!data.halfDaydates.find(date => date === dateSelected.substring(0, 2)) && data.halfDaydates.length < areaSelected.halfDays){
+          paintDay(data.situation, element);
           setData({
             ...data,
             halfDaydates: data.halfDaydates.concat([dateSelected.substring(0, 2)])
@@ -105,20 +117,22 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
       setTimeout(() => {
         setSpinner(false);
         setSuccess(false);
+        setUpdateDataActive(false);
       }, 1000)
     }
   }, [success]);
 
   return (
-    <>
+    <div className='d-flex flex-column'>
       {
         spinner ? <div className="form-spinner"><Spinner /></div> : null
       }
+      <Button variant='light data-btn-style' className='ms-3' onClick={() => updateDataActive ? setUpdateDataActive(false) : setUpdateDataActive(true)}>{updateDataActive ? "Ocultar Formulario" : "Cargar Datos"}</Button>
       <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Error"} popUpText={Object.values(errors).join(', ')} closeBtn={true} />
-      <Form className='ms-3 bg-light px-3' onSubmit={handleSubmit}>
-        <Form.Group className="my-3 userBox" controlId="formBasicUserCalendar">
+      <Form className={`ms-3 bg-light px-3 updateData-calendar-form ${updateDataActive ? "updateData-calendar-form_active" : null }`} onSubmit={handleSubmit}>
+        <Form.Group className={`my-3 userBox`} controlId="formBasicUserCalendar">
         <Form.Label>Usuario</Form.Label>
-          <Form.Select name="userEmail" onChange={handleKeyUp}>
+          <Form.Select name="userEmail" disabled={!updateDataActive} onChange={handleKeyUp}>
             {
               <>
                 <option value="">-- Seleccione un usuario --</option>
@@ -134,14 +148,14 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
       
         <Form.Group className={`my-3 situationBox ${data.userEmail.length !== 0 ? 'situationBox_active' : null}`} controlId="formBasicDaySituationCalendar">
         <Form.Label>Modo de Trabajo</Form.Label>
-          <Form.Select name="situation" onChange={handleKeyUp}>
+          <Form.Select name="situation" onChange={handleKeyUp} disabled={!updateDataActive}>
             <option value="">-- Seleccione un Modo --</option>
             <option value="homeOfDay">Home Office</option>
             <option value="halfDay">Medio Dia</option>
           </Form.Select>
         </Form.Group>
       
-        <Form.Group className={`my-3 dateBox ${data.userEmail.length !== 0 && data.situation.length !== 0 ? 'dateBox_active' : null}`} controlId="formBasicHomeOfDateCalendar">
+        <Form.Group className={`my-3 dateBox ${data.userEmail.length !== 0 ? 'dateBox_active' : null}`} controlId="formBasicHomeOfDateCalendar">
         <Form.Label><span className='fw-bold'>{data.month.length !== 0 ? `Mes: ${data.month}` : ""}</span></Form.Label>
         <br />
         <Form.Label>Fechas Seleccionadas [Home Office]</Form.Label>
@@ -158,7 +172,7 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
           />
         </Form.Group>
       
-        <Form.Group className={`my-3 dateBox ${data.userEmail.length !== 0 && data.situation.length !== 0 ? 'dateBox_active' : null}`} controlId="formBasicHalfDayDateCalendar">
+        <Form.Group className={`my-3 dateBox ${data.userEmail.length !== 0 ? 'dateBox_active' : null}`} controlId="formBasicHalfDayDateCalendar">
         <Form.Label>Fechas Seleccionadas [Medio Dia]</Form.Label>
           <Form.Control
             as="textarea"
@@ -175,7 +189,7 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
         </Button>
       
       </Form>
-    </>
+    </div>
   );
 };
 
