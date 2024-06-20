@@ -31,7 +31,7 @@ const SetUsersPage = () => {
   }, [auth])
 
   useEffect(() => {
-    if(areaSelectedId.length !== 0){
+    if(areaSelectedId.length !== 0 || userAdded){
       const area = businessAreas.find(item => item._id === areaSelectedId);
       setAreaSelected(area);
     }

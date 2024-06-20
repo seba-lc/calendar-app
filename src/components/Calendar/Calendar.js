@@ -122,7 +122,7 @@ const Calendar = ({handleClick, usersData}) => {
               ) : null}`}
               id={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} 
               onClick={handleClick}>
-                <CalendarDay day={item} usersData={usersData} month={month} year={year} />
+                <CalendarDay day={item} usersData={usersData} month={month} year={year} parentId={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} />
               </li>
             ))
           }

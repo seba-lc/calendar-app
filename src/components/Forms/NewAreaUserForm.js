@@ -40,6 +40,9 @@ const NewAreaUserForm = ({ setAreaSelectedId, setUserAdded }) => {
   };
 
   const handleKeyUp = (e) => {
+    if(Object.keys(errors).length !== 0){
+      setErrors({});
+    }
     setNewAreaUser({
       ...newAreaUser,
       [e.target.name]: e.target.value,

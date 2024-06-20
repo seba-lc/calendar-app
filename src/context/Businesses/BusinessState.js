@@ -1,6 +1,6 @@
 import { useReducer } from "react"
 import axiosClient from "../../settings/axiosClient";
-import { DELETE_BUSINESS_AREA, GET_BUSINESSES_AREAS, POST_BUSINESS_AREA } from "../../type";
+import { DELETE_BUSINESS_AREA, GET_BUSINESSES_AREAS, GET_CALENDAR_DATA_PER_BUSINESSAREA, POST_BUSINESS_AREA, POST_CALENDAR_DATA, UPDATE_BUSINESS_AREA } from "../../type";
 import BusinessContext from "./BusinessContext";
 import BusinessReducer from "./BusinessReducer";
 
@@ -8,7 +8,7 @@ const BusinessState = ({ children }) => {
   const initialState = {
     //busines general data ya esta en el usuario
     businessAreas: [], //solo se van a traer las areas de acceso del usuario
-    calendarData: [] //idem
+    calendarDataPerBusinessArea: [] //idem
   }
 
   const [state, dispatch] = useReducer(BusinessReducer, initialState);
@@ -22,12 +22,11 @@ const BusinessState = ({ children }) => {
           type: GET_BUSINESSES_AREAS,
           payload: response.data
         })
-        return errors;
       }
     } catch (error) {
       errors.server = "Error en el Servidor. Intentelo nuevamente.";
-      return errors;
     }
+    return errors;
   }
 
   const postBusinessNewArea = async (areas, userBusiness) => {
@@ -94,14 +93,65 @@ const BusinessState = ({ children }) => {
     return errors;
   }
 
+  const updateAccessGrantedEmailList = async (businessAreaId, newList) => {
+    let errors = {};
+    try {
+      const response = await axiosClient.post('/businessarea/areaupdate', {businessAreaId: businessAreaId, newAccessList: newList});
+      if(response.status === 200){
+        dispatch({
+          type: UPDATE_BUSINESS_AREA,
+          payload: response.data.updatedBusinessArea
+        })
+      }
+    } catch (error) {
+      errors.server = "Error en el Servidor. Intentelo nuevamente."
+    }
+    return errors;
+  }
+
+  const postCalendarDataPerUserPerMonth = async (dataDB) => {
+    let errors = {};
+    try {
+      const response = await axiosClient.post('/calendardata', dataDB);
+      if(response.status === 200){
+        dispatch({
+          type: POST_CALENDAR_DATA,
+          payload: dataDB
+        })
+      }
+    } catch (error) {
+      errors.server = "Error en el Servidor. Intentelo nuevamente."
+    }
+    return errors;
+  }
+
+  const getCalendarDataPerBusinessArea = async (businessAreaId) => {
+    let errors = {};
+    try {
+      const response = await axiosClient.get(`/calendardata/${businessAreaId}`);
+      if(response.status === 200){
+        dispatch({
+          type: GET_CALENDAR_DATA_PER_BUSINESSAREA,
+          payload: response.data
+        })
+      }
+    } catch (error) {
+      errors.server = "Error en el Servidor. Intentelo nuevamente."
+    }
+    return errors;
+  }
+
   return (
     <BusinessContext.Provider value={{
       businessAreas: state.businessAreas,
-      calendarData: state.calendarData,
+      calendarDataPerBusinessArea: state.calendarDataPerBusinessArea,
       postBusinessNewArea,
       getUserBusinessAreas,
       deleteBusinessArea,
-      postNewEmployeeUser
+      postNewEmployeeUser,
+      updateAccessGrantedEmailList,
+      postCalendarDataPerUserPerMonth,
+      getCalendarDataPerBusinessArea
     }}>
       { children }
     </BusinessContext.Provider>
