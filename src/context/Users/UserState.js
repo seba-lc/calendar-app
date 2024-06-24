@@ -33,6 +33,11 @@ const UserState = ({ children }) => {
               type: POST_USER,
               payload: response.data
             })
+            if(response.data.adminKey){
+              localStorage.setItem('adminKey', response.data.adminKey);
+            }else{
+              localStorage.removeItem('adminKey');
+            }
             //Pido datos del usuario en BusinessState
             if(businessAreas.length === 0){
               getUserBusinessAreas(response.data.business[0]._id, response.data.userEmail);

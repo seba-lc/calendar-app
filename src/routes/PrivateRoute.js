@@ -6,7 +6,7 @@ const PrivateRoute = ({ children }) => {
   const { auth } = useContext(UserContext);
 
   //donde esta el true ira el auth
-  return true ? children : <Navigate to="/" />;
+  return auth ? children : <Navigate to="/" />;
 };
 
 export default PrivateRoute;

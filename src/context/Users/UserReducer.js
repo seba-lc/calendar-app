@@ -21,6 +21,9 @@ export default (state, action) => {
       if(localStorage.getItem('ID')){
         localStorage.removeItem('ID')
       }
+      if(localStorage.getItem('adminKey')){
+        localStorage.removeItem('adminKey')
+      }
       delete axiosClient.defaults.headers.common['x-auth-token'];
       return {
         ...state,

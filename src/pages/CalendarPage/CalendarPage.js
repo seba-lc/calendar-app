@@ -8,9 +8,10 @@ import Layout from '../../components/Layout/Layout';
 import UpdateCalendar from '../../components/UpdateCalendar/UpdateCalendar';
 import cleanPaintedDays from '../../helpers/cleanPaintedDays';
 import Spinner from '../../components/Spinner/Spinner';
+import AdminRoute from '../../routes/AdminRoute';
 
 const CalendarPage = () => {
-  const { getAuth, auth, userBusiness, userData } = useContext(UserContext);
+  const { getAuth, auth, userBusiness, userData, adminKey } = useContext(UserContext);
   const { businessAreas, getUserBusinessAreas, calendarDataPerBusinessArea, getCalendarDataPerBusinessArea, calendarData } = useContext(BusinessContext);
   const [areaSelected, setAreaSelected] = useState({});
   const [dateSelected, setDateSelected] = useState("");
@@ -81,7 +82,7 @@ const CalendarPage = () => {
   }, [areaSelected])
 
   useEffect(() => {
-    if(!updateDataActive){
+    if(!updateDataActive && adminKey){
       setData({
         ...data,
         userEmail: "",
@@ -121,7 +122,11 @@ const CalendarPage = () => {
       <div className='calendarPage-style'>
         <div className='logo-style'><img src={logoImg} className='ms-4' width={150} alt="" /></div>
         <Calendar handleClick={handleClick} updateDataActive={updateDataActive} month={month} setMonth={setMonth} year={year} setYear={setYear} />
-        <UpdateCalendar month={month} year={year} areaSelected={areaSelected} dateSelected={dateSelected} data={data} setData={setData} setDateSelected={setDateSelected} updateDataActive={updateDataActive} setUpdateDataActive={setUpdateDataActive} />
+        {
+          adminKey ? (
+            <UpdateCalendar month={month} year={year} areaSelected={areaSelected} dateSelected={dateSelected} data={data} setData={setData} setDateSelected={setDateSelected} updateDataActive={updateDataActive} setUpdateDataActive={setUpdateDataActive} />
+          ) : null
+        }
       </div>
       <button onClick={prueba}>DATA</button>
     </Layout>

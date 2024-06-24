@@ -6,9 +6,9 @@ import SetUsersPage from "./pages/SetUsersPage/SetUsersPage";
 import SetAreasPage from "./pages/SetAreasPage/SetAreasPage";
 import ConfirmationEmailPage from "./pages/ConfirmationEmailPage/ConfirmationEmailPage";
 import UserState from "./context/Users/UserState";
-import PrivateRoute from "./routes/PrivateRoute";
 import BusinessState from "./context/Businesses/BusinessState";
 import ConfirmationAreaEmailPage from "./pages/ConfirmationAreaEmailPage/ConfirmationAreaEmailPage";
+import AdminRoute from "./routes/AdminRoute";
 
 function App() {
   return (
@@ -19,9 +19,9 @@ function App() {
             <Route path="/" element={<RegistrationPage />} />
             <Route path="/emailconfirmation/:user" element={<ConfirmationEmailPage />} />
             <Route path="/emailconfirmation/area/:user" element={<ConfirmationAreaEmailPage />} />
-            <Route path="/setareas" element={<PrivateRoute><SetAreasPage /></PrivateRoute>} />
+            <Route path="/setareas" element={<AdminRoute><SetAreasPage /></AdminRoute>} />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/setusers" element={<SetUsersPage />} />
+            <Route path="/setusers" element={<AdminRoute><SetUsersPage /></AdminRoute>} />
           </Routes>
         </UserState>
       </BusinessState>
