@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
@@ -29,13 +29,11 @@ const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
       setErrors(loginError);
       return;
     }
-
-    //EN CASO ESTE TODO BIEN
     setSuccess(true);
   };
 
   const handleKeyUp = (e) => {
-    if(Object.keys(errors).length !== 0){
+    if(Object.keys(errors).length !== 0 && e.keyCode !== 13){
       setErrors({})
     }
     setUserLog({
@@ -53,30 +51,9 @@ const LoginForm = ({ newUserBoolean, setNewUserBoolean }) => {
     setNewUserBoolean(true)
   }
 
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        setSpinner(false);
-        setSuccess(false);
-        navigate('/calendar');
-      }, 1500)
-    }
-  }, [success]);
-
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        console.log(errors);
-        setSpinner(false);
-      }, 3000)
-    }
-  }, [errors])
-
   return (
     <>
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={false} functionAfterSuccess={() => navigate('/calendar')} />
       <Form onSubmit={handleSubmit} id="login-form" className={`loginForm-style ${newUserBoolean ? 'loginForm_inactive' : 'loginForm_active'}`}>
         <Form.Group className="my-3" controlId="formBasicEmailLogin">
           <Form.Label>Email</Form.Label>

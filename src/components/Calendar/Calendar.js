@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import "./Calendar.css";
-import LegendItem from "../LegendBox/LegendItem";
 import CalendarDay from "../CalendaDay/CalendarDay";
 
-const Calendar = ({handleClick, usersData, updateDataActive, month, setMonth, year, setYear}) => {
+const Calendar = ({handleClick, updateDataActive, month, setMonth, year, setYear}) => {
   const months = [
     "Enero",
     "Febrero",
@@ -120,7 +119,7 @@ const Calendar = ({handleClick, usersData, updateDataActive, month, setMonth, ye
               ) : null}`}
               id={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} 
               onClick={handleClick}>
-                <CalendarDay updateDataActive={updateDataActive} day={item} usersData={usersData} month={month} year={year} parentId={`${item.toString().length < 2 ? '0'+item.toString() : item}-${(month+1).toString().length < 2 ? '0'+(month+1).toString() : (month+1)}-${year}`} />
+                <CalendarDay updateDataActive={updateDataActive} day={item} month={month} year={year} />
               </li>
             ))
           }

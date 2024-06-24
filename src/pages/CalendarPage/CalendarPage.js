@@ -2,17 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import Calendar from '../../components/Calendar/Calendar';
 import './CalendarPage.css';
 import logoImg from './../../assets/Consulting.png'
-import LegendBox from '../../components/LegendBox/LegendBox';
 import UserContext from '../../context/Users/UserContext';
 import BusinessContext from '../../context/Businesses/BusinessContext';
 import Layout from '../../components/Layout/Layout';
 import UpdateCalendar from '../../components/UpdateCalendar/UpdateCalendar';
-import paintDay from '../../helpers/paintDay';
 import cleanPaintedDays from '../../helpers/cleanPaintedDays';
+import Spinner from '../../components/Spinner/Spinner';
 
 const CalendarPage = () => {
   const { getAuth, auth, userBusiness, userData } = useContext(UserContext);
-  const { businessAreas, getUserBusinessAreas, calendarDataPerBusinessArea, getCalendarDataPerBusinessArea } = useContext(BusinessContext);
+  const { businessAreas, getUserBusinessAreas, calendarDataPerBusinessArea, getCalendarDataPerBusinessArea, calendarData } = useContext(BusinessContext);
   const [areaSelected, setAreaSelected] = useState({});
   const [dateSelected, setDateSelected] = useState("");
   const [data, setData] = useState({
@@ -23,10 +22,12 @@ const CalendarPage = () => {
     month: "",
     businessAreaId: ""
   })
-  const [businessAreaCalendarData, setBusinessAreaCalendarData] = useState([]);
   const [updateDataActive, setUpdateDataActive] = useState(false);
   const [month, setMonth] = useState((new Date()).getMonth());
   const [year, setYear] = useState((new Date()).getFullYear());
+  const [spinner, setSpinner] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleClick = (e) => {
     if(data.userEmail.length !== 0 && data.situation.length !== 0){
@@ -36,12 +37,17 @@ const CalendarPage = () => {
   }
 
   const pickArea = (area) => {
+    if(spinner){
+      return
+    }
+    setSpinner(true);
     setAreaSelected(area);
     setData({
       ...data,
       businessAreaId: area._id
     })
     setUpdateDataActive(false);
+    setSuccess(true);
   }
 
   const prueba = () => {
@@ -55,10 +61,6 @@ const CalendarPage = () => {
   useEffect(() => {
     if(!auth){
       getAuth();
-    }else{
-      if(businessAreas.length === 0){
-        getUserBusinessAreas(userBusiness._id, userData.userEmail);
-      }
     }
   }, [auth])
 
@@ -104,12 +106,13 @@ const CalendarPage = () => {
 
   return (
     <Layout>
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={false} />
       {
         businessAreas?.length > 1 ? (
-          <div className='d-flex border mt-3'>
+          <div className='d-flex mt-3 tab-container'>
             {
               businessAreas.map((area, index) => (
-                <div className='mx-1 pointer border' onClick={() => pickArea(area)} key={index}>{area.areaName}</div>
+                <div className={`mx-1 pointer tab ${areaSelected === area ? 'tab_active' : null}`} onClick={() => pickArea(area)} key={index}>{area.areaName}</div>
               ))
             }
           </div>
@@ -118,7 +121,6 @@ const CalendarPage = () => {
       <div className='calendarPage-style'>
         <div className='logo-style'><img src={logoImg} className='ms-4' width={150} alt="" /></div>
         <Calendar handleClick={handleClick} updateDataActive={updateDataActive} month={month} setMonth={setMonth} year={year} setYear={setYear} />
-        {/* <LegendBox legendItemSize={'18px'} /> */}
         <UpdateCalendar month={month} year={year} areaSelected={areaSelected} dateSelected={dateSelected} data={data} setData={setData} setDateSelected={setDateSelected} updateDataActive={updateDataActive} setUpdateDataActive={setUpdateDataActive} />
       </div>
       <button onClick={prueba}>DATA</button>

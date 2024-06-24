@@ -9,7 +9,7 @@ import AreaUsersTable from '../../components/AreaUsersTable/AreaUsersTable';
 
 const SetUsersPage = () => {
   const { auth, getAuth, userData, userBusiness } = useContext(UserContext);
-  const { businessAreas, getUserBusinessAreas } = useContext(BusinessContext);
+  const { businessAreas } = useContext(BusinessContext);
   const [areaSelected, setAreaSelected] = useState({});
   const [areaSelectedId, setAreaSelectedId] = useState('');
   const [userAdded, setUserAdded] = useState(false);
@@ -23,10 +23,6 @@ const SetUsersPage = () => {
   useEffect(() => {
     if(!auth){
       getAuth();
-    }else{
-      if(businessAreas.length === 0){
-        getUserBusinessAreas(userBusiness._id, userData.userEmail);
-      }
     }
   }, [auth])
 

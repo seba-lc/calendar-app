@@ -4,38 +4,18 @@ import Layout from '../../components/Layout/Layout';
 import './SetAreasPage.css';
 import AreasTable from '../../components/AreasTable/AreasTable';
 import UserContext from '../../context/Users/UserContext';
-import Spinner from '../../components/Spinner/Spinner';
 import BusinessContext from '../../context/Businesses/BusinessContext';
 
 const SetAreasPage = () => {
   const [areas, setAreas] = useState([]);
-  const { getAuth, auth, userData, userBusiness } = useContext(UserContext);
-  const { getUserBusinessAreas, businessAreas } = useContext(BusinessContext);
-  const [spinner, setSpinner] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  const prueba = () => {
-    console.log(userData);
-    console.log(userBusiness);
-    // console.log(areas);
-    console.log(businessAreas);
-  }
+  const { getAuth, auth } = useContext(UserContext);
+  const { businessAreas } = useContext(BusinessContext);
 
   useEffect(() => {
     if(!auth){
       getAuth();
-    }else{
-      if(businessAreas.length === 0){
-        getUserBusinessAreas(userBusiness._id, userData.userEmail);
-      }
     }
   }, [auth])
-
-  useEffect(() => {
-    if(success){
-      setSpinner(false);
-    }
-  }, [success])
 
   useEffect(() => {
     if(businessAreas.length !== 0){
@@ -45,13 +25,9 @@ const SetAreasPage = () => {
 
   return (
     <Layout>
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
       <div className='setArea-style'>
         <AreaForm areas={areas} setAreas={setAreas} />
         <AreasTable areas={areas} setAreas={setAreas} />
-        <button onClick={prueba}>DATA</button>
       </div>
     </Layout>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
@@ -42,6 +42,9 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
   };
 
   const handleKeyUp = (e) => {
+    if(Object.keys(errors).length !== 0 && e.keyCode !== 13){
+      setErrors({})
+    }
     setUserLog({
       ...userLog,
       [e.target.name]: e.target.value,
@@ -65,29 +68,9 @@ const RegisterForm = ({ newUserBoolean, setNewUserBoolean }) => {
     setNewUserBoolean(false);
   }
 
-  useEffect(() => {
-    if(success) {
-      setTimeout(() => {
-        setSuccess(false);
-        setSpinner(false);
-        setPopUp(true);
-      }, 2000)
-    }
-  }, [success]);
-
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        setSpinner(false);
-      }, 300)
-    }
-  }, [errors])
-
   return (
     <>
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={false} functionAfterSuccess={() => setPopUp(true)} />
       <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Bienvenido"} popUpText={popUpText} popUpBtnFunction={popUpFunction} popUpBtnText={"Continuar"} />
       <Form onSubmit={handleSubmit} id="register-form" className={`registerForm-style ${newUserBoolean ? 'registerForm_active' : 'registerForm_inactive'} ${popUp ? 'd-none' : null}`}>
       

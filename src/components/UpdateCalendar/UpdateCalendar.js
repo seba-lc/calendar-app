@@ -3,7 +3,6 @@ import './UpdateCalendar.css';
 import { useContext, useEffect, useState } from 'react';
 import Spinner from '../Spinner/Spinner';
 import BusinessContext from '../../context/Businesses/BusinessContext';
-import PopUp from '../PopUp/PopUp';
 import cleanPaintedDays from '../../helpers/cleanPaintedDays';
 import paintDay from '../../helpers/paintDay';
 
@@ -11,7 +10,6 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
-  const [popUp, setPopUp] = useState(false);
   const { postCalendarDataPerUserPerMonth, calendarDataPerBusinessArea } = useContext(BusinessContext);
   
 
@@ -103,32 +101,10 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
     }
   }, [dateSelected])
 
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        setSpinner(false);
-        setPopUp(true);
-      }, 1000)
-    }
-  }, [errors])
-
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        setSpinner(false);
-        setSuccess(false);
-        setUpdateDataActive(false);
-      }, 1000)
-    }
-  }, [success]);
-
   return (
     <div className='d-flex flex-column'>
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={true} functionAfterSuccess={() => setUpdateDataActive(false)} />
       <Button variant='light data-btn-style' className='ms-3' onClick={() => updateDataActive ? setUpdateDataActive(false) : setUpdateDataActive(true)}>{updateDataActive ? "Ocultar Formulario" : "Cargar Datos"}</Button>
-      <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Error"} popUpText={Object.values(errors).join(', ')} closeBtn={true} />
       <Form className={`ms-3 bg-light px-3 updateData-calendar-form ${updateDataActive ? "updateData-calendar-form_active" : null }`} onSubmit={handleSubmit}>
         <Form.Group className={`my-3 userBox`} controlId="formBasicUserCalendar">
         <Form.Label>Usuario</Form.Label>
@@ -162,13 +138,10 @@ const UpdateCalendar = ({areaSelected, dateSelected, data, setData, setDateSelec
           <Form.Control
             as="textarea"
             type="text"
-            // placeholder={data.date.length !== 0 ? data.date.join(', ') : "Seleccione un Fecha"}
             name="homeOfdates"
             disabled
             className='text-area-input'
             value={data.homeOfdates.length !== 0 ? data.homeOfdates.join(', ') : "Seleccione un Fecha"}
-            // style={{height: document.getElementById('formBasicHomeOfDateCalendar')?.scrollHeight+"px"}}
-            // style={{height:( (data.date.length/8) > 2 && (data.date.length/8) <= 3  ? "85px" : ( (data.date.length/8) > 3 ? "105px" : null ) )}}
           />
         </Form.Group>
       

@@ -7,3 +7,22 @@
   align-items: center;
   position: relative;
 }
+
+.logout-style{
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.2); 
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.logout-style:hover{
+  transition: 300ms;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.05); 
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.05);
+}

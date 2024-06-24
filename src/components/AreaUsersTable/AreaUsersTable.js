@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import BusinessContext from '../../context/Businesses/BusinessContext';
 import Spinner from '../Spinner/Spinner';
-import PopUp from '../PopUp/PopUp';
 
 const AreaUsersTable = ({ businessAreaSelected, userAdded, setUserAdded }) => {
   const [areaEmployees, setAreaEmployees] = useState([]);
@@ -15,7 +14,6 @@ const AreaUsersTable = ({ businessAreaSelected, userAdded, setUserAdded }) => {
   const [spinner, setSpinner] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
-  const [popUp, setPopUp] = useState(false);
 
   const setEmployees = () => {
     if(Object.keys(businessAreaSelected).length !== 0){
@@ -40,6 +38,10 @@ const AreaUsersTable = ({ businessAreaSelected, userAdded, setUserAdded }) => {
     setUserAdded(true);
     setSuccess(true);
   }
+  
+  const functionAfterSuccess = () => {
+    setUserAdded(false);
+  }
 
   useEffect(() => {
     setEmployees();
@@ -51,32 +53,10 @@ const AreaUsersTable = ({ businessAreaSelected, userAdded, setUserAdded }) => {
     }
   }, [userAdded])
 
-  useEffect(() => {
-    if(success){
-      setTimeout(() => {
-        setSpinner(false);
-        setSuccess(false);
-        setUserAdded(false);
-      }, 1500)
-    }
-  }, [success])
-
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        setSpinner(false);
-        setPopUp(true);
-      }, 1000)
-    }
-  }, [errors])
-
   return (
 
     <>
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
-      <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Error"} popUpText={Object.values(errors).join(', ')} closeBtn={true} />
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={true} functionAfterSuccess={functionAfterSuccess} />
       <Table bordered className='areaUsersStable-style mt-2'>
         <tbody>
           {
@@ -106,7 +86,6 @@ const AreaUsersTable = ({ businessAreaSelected, userAdded, setUserAdded }) => {
             ) : null
           }
       
-          {/* TENGO QUE AGREGAR EL RESTO DE LOS EMPLOYEES */}
           {
             areaEmployees.length > 1 ? (
               areaEmployees.map((employee, index) => (

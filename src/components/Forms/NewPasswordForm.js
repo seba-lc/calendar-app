@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
@@ -29,22 +29,20 @@ const NewPasswordForm = () => {
     }
     setSpinner(true);
     const newPassError = newPasswordValidation(userLog);
-    if(Object.keys(newPassError).length === 0){
-      const newPasswordError = await postUserNewPassword(userLog.userPassword, params.user);
-      if(Object.keys(newPasswordError).length !== 0){
-        setErrors(newPasswordError);
-        return;
-      }
-  
-      //EN CASO ESTE TODO BIEN
-      setSuccess(true);
-    }else{
+    if(Object.keys(newPassError).length !== 0){
       setErrors(newPassError);
+      return;
     }
+    const newPasswordError = await postUserNewPassword(userLog.userPassword, params.user);
+    if(Object.keys(newPasswordError).length !== 0){
+      setErrors(newPasswordError);
+      return;
+    }
+    setSuccess(true);
   };
 
   const handleKeyUp = (e) => {
-    if(Object.keys(errors).length !== 0){
+    if(Object.keys(errors).length !== 0 && e.keyCode !== 13){
       setErrors({})
     }
     setUserLog({
@@ -61,30 +59,14 @@ const NewPasswordForm = () => {
     }
   }
 
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        document.getElementById("newPassword-form").reset();
-        setSpinner(false);
-        setSuccess(false);
-        setPopUp(true);
-      }, 1500)
-    }
-  }, [success]);
-
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        setSpinner(false);
-      }, 500)
-    }
-  }, [errors])
+  const functionAfterSuccess = () => {
+    document.getElementById("newPassword-form").reset();
+    setPopUp(true);
+  }
 
   return (
     <>
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={false} functionAfterSuccess={functionAfterSuccess} />
       <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={popUpTitle} popUpText={popUpText} popUpBtnFunction={popFunction} popUpBtnText={"Continuar"} />
       <Form onSubmit={handleSubmit} id="newPassword-form" className="loginForm-style">
         <Form.Group className="mb-3" controlId="formBasicPassword">

@@ -13,3 +13,25 @@
 .halfDay-selected-style{
   background-color: #fa7676;
 }
+
+.tab-container {
+  display: flex;
+  border-bottom: 2px solid #ccc;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border: 1px solid transparent;
+  border-bottom: none;
+}
+
+.tab:hover {
+  background-color: #f1f1f1;
+}
+
+.tab_active {
+  background-color: #f1f1f1;
+  border-color: #ccc;
+}

@@ -1,8 +1,9 @@
-import { useReducer } from "react"
+import { useContext, useReducer } from "react"
 import UserReducer from "./UserReducer"
 import axiosClient from "../../settings/axiosClient";
 import { POST_USER, REMOVE_USER } from "../../type";
 import UserContext from "./UserContext";
+import BusinessContext from "../Businesses/BusinessContext";
 
 const UserState = ({ children }) => {
   const initialState = {
@@ -12,6 +13,7 @@ const UserState = ({ children }) => {
     checkedUser: false,
     auth: false
   }
+  const { getUserBusinessAreas, businessAreas } = useContext(BusinessContext);
 
   const [state, dispatch] = useReducer(UserReducer, initialState);
 
@@ -31,6 +33,10 @@ const UserState = ({ children }) => {
               type: POST_USER,
               payload: response.data
             })
+            //Pido datos del usuario en BusinessState
+            if(businessAreas.length === 0){
+              getUserBusinessAreas(response.data.business[0]._id, response.data.userEmail);
+            }
           }
         }
       } catch (error) {
@@ -39,6 +45,13 @@ const UserState = ({ children }) => {
         })
       }
     }
+  }
+
+  const logout = () => {
+    dispatch({
+      type: REMOVE_USER
+    })
+    window.location.assign(process.env.REACT_APP_ORIGIN);
   }
 
   const getUserByEmail = async (userLog) => {
@@ -90,7 +103,8 @@ const UserState = ({ children }) => {
       auth: state.auth,
       getAuth,
       getUserByEmail,
-      postUserNewPassword
+      postUserNewPassword,
+      logout
     }}>
       { children }
     </UserContext.Provider>

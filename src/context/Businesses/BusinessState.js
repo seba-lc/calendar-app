@@ -59,23 +59,16 @@ const BusinessState = ({ children }) => {
 
   const deleteBusinessArea = async (businessArea) => {
     let errors = {};
-    if(businessArea._id){
-      try {
-        const response = await axiosClient.post('/businessarea/delete', {id: businessArea._id});
-        if(response.status === 200){
-          dispatch({
-            type: DELETE_BUSINESS_AREA,
-            payload: businessArea
-          })
-        }
-      } catch (error) {
-        errors.server = "Error en el Servidor. Intentelo nuevamente."
+    try {
+      const response = await axiosClient.post('/businessarea/delete', {id: businessArea._id});
+      if(response.status === 200){
+        dispatch({
+          type: DELETE_BUSINESS_AREA,
+          payload: businessArea
+        })
       }
-    }else{
-      dispatch({
-        type: DELETE_BUSINESS_AREA,
-        payload: businessArea
-      })
+    } catch (error) {
+      errors.server = "Error en el Servidor. Intentelo nuevamente."
     }
     return errors;
   }

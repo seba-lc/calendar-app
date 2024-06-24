@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import './Forms.css';
 import Spinner from "../Spinner/Spinner";
@@ -35,42 +35,29 @@ const AreaForm = ({ areas, setAreas }) => {
   };
 
   const handleKeyUp = (e) => {
+    if(Object.keys(errors).length !== 0 && e.keyCode !== 13){
+      setErrors({});
+    }
     setAreaData({
       ...areaData,
       [e.target.name]: e.target.value.trim(),
     });
   };
-
-  useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        setSpinner(false);
-        setSuccess(false);
-        document.getElementById('formBasicAreaName').value = "";
-        document.getElementById('formBasicManagerName').value = "";
-        document.getElementById('formBasicManagerEmail').value = "";
-        document.getElementById('formBasicAreaName').select();
-        setAreaData({
-          ...areaData,
-          areaName: ""
-        })
-      }, 300)
-    }
-  }, [success]);
-
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        setSpinner(false);
-      }, 300)
-    }
-  }, [errors])
+  
+  const functionAfterSuccess = () => {
+    document.getElementById('formBasicAreaName').value = "";
+    document.getElementById('formBasicManagerName').value = "";
+    document.getElementById('formBasicManagerEmail').value = "";
+    document.getElementById('formBasicAreaName').select();
+    setAreaData({
+      ...areaData,
+      areaName: ""
+    })
+  }
 
   return (
     <Form onSubmit={handleSubmit} className="areaForm-style my-2 px-4 py-2">
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={false} functionAfterSuccess={functionAfterSuccess} />
       <Form.Group className="mt-3 d-flex align-items-center justify-content-between" controlId="formBasicAreaName">
         <Form.Label>Área</Form.Label>
         <Form.Control

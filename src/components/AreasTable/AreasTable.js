@@ -1,13 +1,10 @@
 import { Button, Table } from 'react-bootstrap';
 import './AreasTable.css';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Spinner from '../Spinner/Spinner';
 import UserContext from '../../context/Users/UserContext';
-import axiosClient from '../../settings/axiosClient';
-import postNewArea from '../../helpers/postNewArea';
-import PopUp from '../PopUp/PopUp';
 import BusinessContext from '../../context/Businesses/BusinessContext';
 
 const AreasTable = ({ areas, setAreas }) => {
@@ -16,17 +13,22 @@ const AreasTable = ({ areas, setAreas }) => {
   const { userBusiness } = useContext(UserContext);
   const { postBusinessNewArea, businessAreas, deleteBusinessArea } = useContext(BusinessContext);
   const [errors, setErrors] = useState({});
-  const [popUp, setPopUp] = useState(false);
 
   const deleteItem = async (itemSelected) => {
     if(spinner){
       return;
     }
-    console.log(itemSelected);
     setSpinner(true);
+    if(!itemSelected._id){
+      const newArray = areas.filter(item => item !== itemSelected);
+      setAreas(newArray);
+      setSuccess(true);
+      return;
+    }
     const deleteError = await deleteBusinessArea(itemSelected);
     if(Object.keys(deleteError).length !== 0){
-      setErrors(deleteError)
+      setErrors(deleteError);
+      return;
     }
     setSuccess(true);
   }
@@ -49,33 +51,12 @@ const AreasTable = ({ areas, setAreas }) => {
     }
   }
 
-  useEffect(() => {
-    if(success){
-      setTimeout(() => {
-        setSpinner(false);
-        setSuccess(false);
-      }, 300)
-    }
-  }, [success])
-
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        setSpinner(false);
-        setPopUp(true);
-      }, 3000)
-    }
-  }, [errors])
-
   return (
     <>
       {
         areas.length === 0 ? null : (
           <>
-            {
-              spinner ? <div className="form-spinner"><Spinner /></div> : null
-            }
-            <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Error"} popUpText={Object.values(errors).join(', ')} closeBtn={true} />
+            <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={true} />
             <Table bordered className='areaTable-style mt-3 mb-0'>
               <thead>
                 <tr>

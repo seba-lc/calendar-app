@@ -48,16 +48,6 @@ const ConfirmationEmailPage = () => {
   }, [])
 
   useEffect(() => {
-    if(success){
-      setTimeout(() => {
-        setSuccess(false);
-        setSpinner(false);
-        setPopUp(true);
-      }, 3000)
-    }
-  }, [success])
-
-  useEffect(() => {
     if(getOut){
       setTimeout(() => {
         setSpinner(false);
@@ -67,27 +57,10 @@ const ConfirmationEmailPage = () => {
     }
   }, [getOut])
 
-  useEffect(() => {
-    if(Object.keys(errors).length !== 0){
-      setTimeout(() => {
-        setSpinner(false);
-        setPopUp(true);
-      }, 3000)
-    }
-  }, [errors])
-
   return (
     <Layout>
-      {
-        spinner ? <div className="form-spinner"><Spinner /></div> : null
-      }
-      {
-        Object.keys(errors).length === 0 ? (
-          <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={popUpTitle} popUpText={popUpText} popUpBtnFunction={handleClick} popUpBtnText={"Continuar"} />
-        ) : (
-          <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={"Error"} popUpText={Object.values(errors).join(', ')} popUpBtnFunction={() => navigate('/')} popUpBtnText={"Ir al inicio"} />
-        )
-      }
+      <Spinner spinner={spinner} setSpinner={setSpinner} success={success} setSuccess={setSuccess} errors={errors} setErrors={setErrors} popUpError={true} functionAfterSuccess={() => setPopUp(true)} />
+      <PopUp popUp={popUp} setPopUp={setPopUp} popUpTitle={popUpTitle} popUpText={popUpText} popUpBtnFunction={handleClick} popUpBtnText={"Continuar"} />
     </Layout>
   );
 };

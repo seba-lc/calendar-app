@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import CalendarPage from "./pages/CalendarPage/CalendarPage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
-import SetCalendarPage from "./pages/SetCalendarPage/SetCalendarPage";
 import SetUsersPage from "./pages/SetUsersPage/SetUsersPage";
 import SetAreasPage from "./pages/SetAreasPage/SetAreasPage";
 import ConfirmationEmailPage from "./pages/ConfirmationEmailPage/ConfirmationEmailPage";
@@ -14,21 +13,23 @@ import ConfirmationAreaEmailPage from "./pages/ConfirmationAreaEmailPage/Confirm
 function App() {
   return (
     <>
-      <UserState>
-        <BusinessState>
+      <BusinessState>
+        <UserState>
           <Routes>
             <Route path="/" element={<RegistrationPage />} />
             <Route path="/emailconfirmation/:user" element={<ConfirmationEmailPage />} />
             <Route path="/emailconfirmation/area/:user" element={<ConfirmationAreaEmailPage />} />
             <Route path="/setareas" element={<PrivateRoute><SetAreasPage /></PrivateRoute>} />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/setcalendar" element={<SetCalendarPage />} />
             <Route path="/setusers" element={<SetUsersPage />} />
           </Routes>
-        </BusinessState>
-      </UserState>
+        </UserState>
+      </BusinessState>
     </>
   );
 }
 
 export default App;
+
+//ME FALTA POR ARREGLAR CALENDARPAGE Y SETUSERSPAGE.
+//CON ESO YA ESTARIA TODAS LAS RUTAS PROBADAS. TODO EL CODIGO LIMPIO.

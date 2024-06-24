@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout/Layout';
 import './ConfirmationAreaEmailPage.css';
+import './../../components/Spinner/Spinner.css'
 import NewPasswordForm from '../../components/Forms/NewPasswordForm';
-import Spinner from '../../components/Spinner/Spinner';
 
 const ConfirmationAreaEmailPage = () => {
   const [spinner, setSpinner] = useState(true);
@@ -16,7 +16,7 @@ const ConfirmationAreaEmailPage = () => {
   return (
     <Layout>
       {
-        spinner ? <div className="form-spinner"><Spinner /></div> : (
+        spinner ? <div className="form-spinner"><span className='loader'></span></div> : (
           <NewPasswordForm />
         )
       }

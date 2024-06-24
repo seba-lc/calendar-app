@@ -1,3 +1,4 @@
+import getDataPerDayPerWorkMood from "../../helpers/getDataPerDayPerWorkMood"
 import { DELETE_BUSINESS_AREA, GET_BUSINESSES_AREAS, GET_CALENDAR_DATA_PER_BUSINESSAREA, POST_BUSINESS_AREA, POST_CALENDAR_DATA, UPDATE_BUSINESS_AREA } from "../../type"
 
 export default (state, action) => {
@@ -15,9 +16,12 @@ export default (state, action) => {
       }
 
     case DELETE_BUSINESS_AREA:
+      console.log(action.payload);
+      console.log(state.businessAreas);
+      const newArray = state.businessAreas.filter(area => area.areaName !== action.payload.areaName)
       return {
         ...state,
-        businessAreas: state.businessAreas.filter(area => area !== action.payload)
+        businessAreas: newArray
       }
 
     case UPDATE_BUSINESS_AREA:
@@ -34,41 +38,20 @@ export default (state, action) => {
         homeOfdates: action.payload.homeOfdates,
         userEmail: action.payload.userEmail
       }
+      const data = state.calendarDataPerBusinessArea.find(item => item.userEmail === dataPushed.userEmail);
+      if(data){
+        state.calendarDataPerBusinessArea.splice(state.calendarDataPerBusinessArea.indexOf(data), 1);
+      }
+      const newDataArray = state.calendarDataPerBusinessArea.concat([dataPushed]);
+      const newArrayFormatted = getDataPerDayPerWorkMood(newDataArray);
       return {
         ...state,
-        calendarDataPerBusinessArea: state.calendarDataPerBusinessArea.concat([dataPushed])
+        calendarDataPerBusinessArea: newDataArray,
+        calendarData: newArrayFormatted
       }
 
     case GET_CALENDAR_DATA_PER_BUSINESSAREA:
-      let dataFormatted = [];
-      action.payload.forEach(item => {
-        item.halfDaydates.forEach(day => {
-          const dataAlreadyExist = dataFormatted.find(data => data.date === `${day}-${item.month}` && data.workMood === "halfDay");
-          if(dataAlreadyExist){
-            dataAlreadyExist.users.push(item.userEmail);
-          }else{
-            //si el dia no esta
-            dataFormatted.push({
-              date: `${day}-${item.month}`,
-              workMood: "halfDay",
-              users: [item.userEmail]
-            })
-          }
-        })
-        item.homeOfdates.forEach(day => {
-          const dataAlreadyExist = dataFormatted.find(data => data.date === `${day}-${item.month}` && data.workMood === "homeOfDay");
-          if(dataAlreadyExist){
-            dataAlreadyExist.users.push(item.userEmail);
-          }else{
-            //si el dia no esta
-            dataFormatted.push({
-              date: `${day}-${item.month}`,
-              workMood: "homeOfDay",
-              users: [item.userEmail]
-            })
-          }
-        })
-      })
+      const dataFormatted = getDataPerDayPerWorkMood(action.payload)
       return {
         ...state,
         calendarDataPerBusinessArea: action.payload,

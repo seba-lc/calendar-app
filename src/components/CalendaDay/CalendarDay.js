@@ -2,10 +2,9 @@ import { useContext, useEffect, useState } from 'react';
 import LegendItem from '../LegendBox/LegendItem';
 import './CalendarDay.css';
 import BusinessContext from '../../context/Businesses/BusinessContext';
-import LegendItem2 from '../LegendBox/LegendItem2';
 
-const CalendarDay = ({day, usersData, year, month, parentId, updateDataActive}) => {
-  const { calendarDataPerBusinessArea, calendarData } = useContext(BusinessContext);
+const CalendarDay = ({day, year, month, updateDataActive}) => {
+  const { calendarData } = useContext(BusinessContext);
   const [halfDayBoolean, setHalfDayBoolean] = useState(false);
   const [homeOfDayBoolean, setHomeOfDayBoolean] = useState(false);
   const [homeOfUsers, setHomeOfUsers] = useState([]);
